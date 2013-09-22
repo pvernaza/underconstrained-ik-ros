@@ -1,8 +1,6 @@
 #ifndef __UnderconstrainedIKROS_hh__
 #define __UnderconstrainedIKROS_hh__
 
-#include "UnderconstrainedIK.hh"
-
 #include <Eigen/Dense>
 
 #include <moveit/robot_model_loader/robot_model_loader.h>
@@ -11,6 +9,8 @@
 #include <moveit/robot_state/joint_state_group.h>
 
 namespace underconstrained_ik_ros {
+
+#include "UnderconstrainedIK.hh"
 
   struct KinModelAndJointGroup {
     robot_model::RobotModelPtr kinModel;
