@@ -1,0 +1,3 @@
+[submodule "underconstrained-ik-simple"]
+	path = underconstrained-ik-simple
+	url = https://github.com/pvernaza/underconstrained-ik-simple.git
