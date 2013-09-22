@@ -12,7 +12,12 @@
 
 namespace underconstrained_ik_ros {
 
-  typedef boost::shared_ptr<robot_state::JointStateGroup> KinModel;
+  struct KinModelAndJointGroup {
+    robot_model::RobotModelPtr kinModel;
+    std::string jointGroupName; 	   // e.g., "right_arm"
+  };
+
+  typedef KinModelAndJointGroup KinModel;
   typedef std::pair<std::string, Eigen::Vector3d> KinChainPt;
 
   template<>
@@ -25,8 +30,26 @@ namespace underconstrained_ik_ros {
     ComputeCartesianFK(KinModel const& kinModel, 
 		       KinChainPt const& kinChainPt,
 		       std::vector<UCJointIKState> const& jointIKStates) {
+
+      // create a robot kinematic state given the kinematic model
+      robot_state::RobotStatePtr kinState
+	(new robot_state::RobotState(kinModel.kinModel));
+      kinState->setToDefaultValues();
+
+      // FIXME: does this need to be deleted?
+      // create a joint state group for the given joint group name
+      robot_state::JointStateGroup* jointStateGroup = 
+	kinState->getJointStateGroup(kinModel.jointGroupName);
+
+      // set the joint angles for the group
+      vector<double> jointAngles(jointIKStates.size());
+      for (ii = 0; ii < jointAngles.size(); ii++)
+	jointAngles[ii] = jointIKStates[ii].angle;
+      jointStateGroup->setVariableValues(jointAngles);
+
+      // call FK
       Eigen::Affine3d const& ptState = 
-	kinModel
+	jointStateGroup
 	->getRobotState()
 	->getLinkState(kinChainPt.first)
 	->getGlobalLinkTransform();
@@ -38,7 +61,26 @@ namespace underconstrained_ik_ros {
     ComputeJacobian(KinModel const& kinModel, 
 		    KinChainPt const& kinChainPt,
 		    std::vector<UCJointIKState> const& jointIKStates) {
+
+      // FIXME: copy-pasting from above
+      // create a robot kinematic state given the kinematic model
+      robot_state::RobotStatePtr kinState
+	(new robot_state::RobotState(kinModel.kinModel));
+      kinState->setToDefaultValues();
+
+      // FIXME: does this need to be deleted?
+      // create a joint state group for the given joint group name
+      robot_state::JointStateGroup* jointStateGroup = 
+	kinState->getJointStateGroup(kinModel.jointGroupName);
+
+      // set the joint angles for the group
+      vector<double> jointAngles(jointIKStates.size());
+      for (ii = 0; ii < jointAngles.size(); ii++)
+	jointAngles[ii] = jointIKStates[ii].angle;
+      jointStateGroup->setVariableValues(jointAngles);
+
       Eigen::MatrixXd jacobian;
+
       kinModel->getJacobian(kinChainPt.first, kinChainPt.second, jacobian);
       return jacobian;
     }
@@ -47,6 +89,8 @@ namespace underconstrained_ik_ros {
   class UCIKSolver : public UCIKSolver<KinModel, KinChainPt> {
 
   };
+
+private:
 
 };
 
