@@ -1,0 +1,19 @@
+<package>
+  <description brief="UnderconstrainedIKROS">
+
+     UnderconstrainedIKROS
+
+  </description>
+  <author>Paul Vernaza</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/UnderconstrainedIKROS</url>
+
+  <export>
+    <cpp cflags="-I${prefix}/include" lflags="-L${prefix}/lib -lros"/>
+    <cpp os="osx" cflags="-I${prefix}/include" lflags="-L${prefix}/lib -Wl,-rpath,-L${prefix}lib -lrosthread -framework CoreServices"/>
+  </export>
+
+</package>
+
+
