@@ -9,9 +9,14 @@
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/UnderconstrainedIKROS</url>
 
+  <depend package="moveit_msgs"/>
+  <depend package="moveit_core"/>
+  <depend package="moveit_ros_planning"/>
+  <depend package="moveit_ros_planning_interface"/>
+
   <export>
-    <cpp cflags="-I${prefix}/include" lflags="-L${prefix}/lib -lros"/>
-    <cpp os="osx" cflags="-I${prefix}/include" lflags="-L${prefix}/lib -Wl,-rpath,-L${prefix}lib -lrosthread -framework CoreServices"/>
+    <cpp cflags="-I${prefix}/include -I${prefix}/underconstrained-ik-simple" lflags="-L${prefix}/lib -lros"/>
+    <cpp os="osx" cflags="-I${prefix}/include -I${prefix}/underconstrained-ik-simple" lflags="-L${prefix}/lib -Wl,-rpath,-L${prefix}lib -lrosthread -framework CoreServices"/>
   </export>
 
 </package>
